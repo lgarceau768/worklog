@@ -1,6 +1,6 @@
 {
   "name": "opencode-worklog",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Cross-session work management for OpenCode — todos, blockers, decisions, ADRs, and session checkpoints.",
   "type": "module",
   "main": "index.ts",
