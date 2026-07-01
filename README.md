@@ -1,21 +1,71 @@
-# opencode-worklog
+```
+ ██╗    ██╗ ██████╗ ██████╗ ██╗  ██╗██╗      ██████╗  ██████╗ 
+ ██║    ██║██╔═══██╗██╔══██╗██║ ██╔╝██║     ██╔═══██╗██╔════╝ 
+ ██║ █╗ ██║██║   ██║██████╔╝█████╔╝ ██║     ██║   ██║██║  ███╗
+ ██║███╗██║██║   ██║██╔══██╗██╔═██╗ ██║     ██║   ██║██║   ██║
+ ╚███╔███╔╝╚██████╔╝██║  ██║██║  ██╗███████╗╚██████╔╝╚██████╔╝
+  ╚══╝╚══╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝ ╚═════╝  ╚═════╝ 
+```
+
+<div align="center">
+
+**Cross-session work management for AI agents. Your todos survive. Your decisions persist. Your context comes back.**
 
 [![npm](https://img.shields.io/npm/v/opencode-worklog)](https://www.npmjs.com/package/opencode-worklog)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![works with opencode](https://img.shields.io/badge/works%20with-opencode-black)](https://opencode.ai)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![runtime: bun](https://img.shields.io/badge/runtime-bun-fbf0df?logo=bun&logoColor=black)](https://bun.sh)
 
-**Cross-session work management for [OpenCode](https://opencode.ai) AI agents.**
+</div>
 
-OpenCode sessions are stateless — each compaction or restart wipes the agent's working memory. `opencode-worklog` solves this by persisting todos, blockers, and decisions to disk and automatically injecting them back into context on compaction, so work in progress survives session resets.
+---
+
+## The problem
+
+OpenCode sessions are stateless. Every context compaction or restart wipes the agent's working memory — todos vanish, blockers disappear, half-finished decisions evaporate. You're left re-explaining context that was perfectly documented ten minutes ago.
+
+`opencode-worklog` fixes this. It persists todos, blockers, and decisions to disk, then automatically injects them back into context at compaction time. Work in progress survives session resets.
 
 ---
 
 ## What it does
 
-An OpenCode plugin (`index.ts`) that:
+An OpenCode plugin (`index.ts`) that hooks into two lifecycle events:
 
-1. **On session start** — bootstraps the `.worklog/` directory structure in the project root (idempotent)
-2. **On session start** — auto-installs 6 skills to `.opencode/skills/` (skips any that are already present)
-3. **On context compaction** — injects open todos and active blockers into the compaction payload so they survive the reset
+1. **On session start** — bootstraps the `.worklog/` directory structure in the project root (idempotent; safe to run repeatedly)
+2. **On session start** — auto-installs 6 skills to `.opencode/skills/` (skips any already present)
+3. **On context compaction** — reads open todos and active blockers from disk, injects them into the compaction payload so they land in the next session's context
+
+---
+
+## How it works
+
+```
+Session Start
+     │
+     ├──► Bootstrap .worklog/ directory structure
+     │
+     └──► Auto-install skills to .opencode/skills/
+                │
+                ▼
+         Inject system prompt:
+         "use /worklog, /worklog-todo, /worklog-decide…"
+                │
+                ▼
+          [ work happens ]
+                │
+                ▼
+     Context Compaction
+                │
+                └──► Read todos.json + blockers.md
+                          │
+                          ▼
+                   Inject into compaction payload
+                          │
+                          ▼
+                  Open work survives reset ✓
+```
 
 ---
 
@@ -29,7 +79,7 @@ Add to `opencode.json` in your project root:
 }
 ```
 
-That's it. On the next session start, the plugin bootstraps `.worklog/` and installs the skills automatically.
+That's it. On the next session start the plugin bootstraps `.worklog/` and installs the skills automatically. No further configuration needed.
 
 ### Local / development
 
@@ -63,17 +113,17 @@ Six skills are installed to `.opencode/skills/` automatically. Invoke them by sl
 
 ```
 .worklog/
-  todos.json          ← active todos (JSON array)
-  todos.done.json     ← archived done/dropped todos
-  blockers.md         ← open questions and blockers
-  decisions.md        ← lightweight ADRs (ADR-001…)
-  sessions/           ← daily session files (YYYY-MM-DD.md)
-  adrs/               ← pre-decision technical research
-  reports/            ← formal investigation reports
-  research/           ← quick audit notes
+├── todos.json          ← active todos (JSON array)
+├── todos.done.json     ← archived done/dropped todos
+├── blockers.md         ← open questions and blockers
+├── decisions.md        ← lightweight ADRs (ADR-001…)
+├── sessions/           ← daily session files (YYYY-MM-DD.md)
+├── adrs/               ← pre-decision technical research
+├── reports/            ← formal investigation reports
+└── research/           ← quick audit notes
 
 docs/
-  adr-NNN-*.md        ← full formal ADRs (committed, permanent)
+└── adr-NNN-*.md        ← full formal ADRs (committed, permanent)
 ```
 
 ---
@@ -84,7 +134,7 @@ docs/
 # Session files are noisy — safe to ignore
 .worklog/sessions/
 
-# Auto-installed skills (reinstalled each session start)
+# Auto-installed skills — reinstalled each session start
 .opencode/skills/worklog
 .opencode/skills/worklog-todo
 .opencode/skills/worklog-archive
@@ -93,13 +143,13 @@ docs/
 .opencode/skills/worklog-docs
 ```
 
-**Worth committing:** `.worklog/todos.json`, `.worklog/decisions.md`, `.worklog/blockers.md`, and everything under `docs/`.
+**Worth committing:** `.worklog/todos.json`, `.worklog/decisions.md`, `.worklog/blockers.md`, and everything under `docs/`. These are your persistent project memory.
 
 ---
 
 ## Contributing
 
-PRs and issues welcome on [GitHub](https://github.com/lgarceau768/worklog).
+PRs and issues welcome on [GitHub](https://github.com/lgarceau768/worklog). Keep it small — this plugin is intentionally minimal.
 
 ---
 
