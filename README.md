@@ -1,62 +1,72 @@
 # opencode-worklog
 
-Cross-session work management for [OpenCode](https://opencode.ai) — todos, blockers, decisions, ADRs, session checkpoints, and documentation.
+[![npm](https://img.shields.io/npm/v/opencode-worklog)](https://www.npmjs.com/package/opencode-worklog)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## What it provides
+**Cross-session work management for [OpenCode](https://opencode.ai) AI agents.**
 
-Six agent skills wired through a plugin that bootstraps the `.worklog/` directory and injects open work items into context compaction.
+OpenCode sessions are stateless — each compaction or restart wipes the agent's working memory. `opencode-worklog` solves this by persisting todos, blockers, and decisions to disk and automatically injecting them back into context on compaction, so work in progress survives session resets.
 
-| Skill | Trigger |
-|---|---|
-| `worklog` | Dashboard, mid-session checkpoint, session close |
-| `worklog-todo` | Add/list/complete/drop cross-session todos |
-| `worklog-archive` | Move done todos to permanent archive |
-| `worklog-blocker` | Record and resolve blockers/open questions |
-| `worklog-decide` | Record lightweight ADRs in `.worklog/decisions.md` |
-| `worklog-docs` | Browse/write formal ADRs, reports, and research notes |
+---
+
+## What it does
+
+An OpenCode plugin (`index.ts`) that:
+
+1. **On session start** — bootstraps the `.worklog/` directory structure in the project root (idempotent)
+2. **On session start** — auto-installs 6 skills to `.opencode/skills/` (skips any that are already present)
+3. **On context compaction** — injects open todos and active blockers into the compaction payload so they survive the reset
+
+---
 
 ## Install
 
-### From npm (once published)
+Add to `opencode.json` in your project root:
 
 ```json
-// opencode.json
 {
-  "plugin": ["opencode-worklog"]
+  "plugins": ["opencode-worklog"]
 }
 ```
 
-### From local path (development)
+That's it. On the next session start, the plugin bootstraps `.worklog/` and installs the skills automatically.
+
+### Local / development
 
 ```json
-// opencode.json
 {
-  "plugin": ["file:../opencode-worklog"]
+  "plugins": ["file:../opencode-worklog"]
 }
 ```
 
-Or for global use, add the skills to `~/.config/opencode/skills/` by symlinking:
+> **Peer dependency:** `@opencode-ai/plugin`  
+> **Runtime:** Bun (OpenCode's native runtime)
 
-```sh
-for skill in worklog worklog-todo worklog-archive worklog-blocker worklog-decide worklog-docs; do
-  ln -s /path/to/opencode-worklog/skills/$skill ~/.config/opencode/skills/$skill
-done
-```
+---
 
-## How it works
+## Skills reference
 
-**Plugin** (`index.ts`): On `session.created`, bootstraps the `.worklog/` directory structure if it doesn't exist. On `experimental.session.compacting`, injects open todos and blockers into the compaction context so they survive session resets.
+Six skills are installed to `.opencode/skills/` automatically. Invoke them by slash command or by describing what you want to the agent.
 
-**Skills**: Markdown instruction files loaded by OpenCode's skill system. The agent invokes them when it sees relevant triggers in the conversation (e.g. "add a todo", "record a decision", "show worklog status").
+| Skill | Triggers | Purpose |
+|---|---|---|
+| `worklog` | `/worklog` · `/worklog checkpoint` · `/worklog end` | Session dashboard, mid-session checkpoint, close-out summary |
+| `worklog-todo` | `/worklog-todo add <title>` · `list` · `done <id>` · `drop <id>` | Cross-session todo list backed by `.worklog/todos.json` |
+| `worklog-archive` | `/worklog-archive` | Move done/dropped todos to `todos.done.json` |
+| `worklog-blocker` | `/worklog-blocker add <title>` · `resolve <id>` | Record and resolve blockers and open questions |
+| `worklog-decide` | `/worklog-decide` | Lightweight ADR appended to `.worklog/decisions.md` |
+| `worklog-docs` | `/worklog-docs` · `new adr` · `new report` · `new research` | Full ADR, formal report, and research note management |
+
+---
 
 ## `.worklog/` layout
 
 ```
 .worklog/
-  todos.json          ← active todo list
-  todos.done.json     ← archive of done/dropped todos
+  todos.json          ← active todos (JSON array)
+  todos.done.json     ← archived done/dropped todos
   blockers.md         ← open questions and blockers
-  decisions.md        ← lightweight ADRs (ADR-001, ADR-002, …)
+  decisions.md        ← lightweight ADRs (ADR-001…)
   sessions/           ← daily session files (YYYY-MM-DD.md)
   adrs/               ← pre-decision technical research
   reports/            ← formal investigation reports
@@ -66,7 +76,32 @@ docs/
   adr-NNN-*.md        ← full formal ADRs (committed, permanent)
 ```
 
-Add `.worklog/sessions/` to `.gitignore` if session files are too noisy for your repo. The rest (todos, decisions, ADRs) are worth committing.
+---
+
+## Gitignore recommendations
+
+```gitignore
+# Session files are noisy — safe to ignore
+.worklog/sessions/
+
+# Auto-installed skills (reinstalled each session start)
+.opencode/skills/worklog
+.opencode/skills/worklog-todo
+.opencode/skills/worklog-archive
+.opencode/skills/worklog-blocker
+.opencode/skills/worklog-decide
+.opencode/skills/worklog-docs
+```
+
+**Worth committing:** `.worklog/todos.json`, `.worklog/decisions.md`, `.worklog/blockers.md`, and everything under `docs/`.
+
+---
+
+## Contributing
+
+PRs and issues welcome on [GitHub](https://github.com/lgarceau768/worklog).
+
+---
 
 ## License
 

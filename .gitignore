@@ -1,5 +1,14 @@
 .worklog/sessions/
 node_modules/
+dist/
+*.tsbuildinfo
+# auto-installed skills (managed by plugin on init)
+.opencode/skills/worklog/
+.opencode/skills/worklog-todo/
+.opencode/skills/worklog-archive/
+.opencode/skills/worklog-blocker/
+.opencode/skills/worklog-decide/
+.opencode/skills/worklog-docs/
 
 # Beads / Dolt files (added by bd init)
 .dolt/

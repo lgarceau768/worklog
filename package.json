@@ -1,18 +1,46 @@
 {
   "name": "opencode-worklog",
   "version": "0.1.0",
-  "description": "Cross-session worklog system for OpenCode — todos, blockers, decisions, ADRs, and session checkpoints.",
+  "description": "Cross-session work management for OpenCode — todos, blockers, decisions, ADRs, and session checkpoints.",
   "type": "module",
   "main": "index.ts",
   "exports": {
     ".": "./index.ts"
   },
-  "keywords": ["opencode", "opencode-plugin", "worklog", "adr", "todos", "session"],
+  "files": [
+    "index.ts",
+    "skills/",
+    "LICENSE",
+    "README.md"
+  ],
+  "keywords": [
+    "opencode",
+    "opencode-plugin",
+    "worklog",
+    "adr",
+    "todos",
+    "session",
+    "agentic"
+  ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lgarceau768/worklog.git"
+  },
+  "homepage": "https://github.com/lgarceau768/worklog#readme",
+  "bugs": {
+    "url": "https://github.com/lgarceau768/worklog/issues"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
   "peerDependencies": {
     "@opencode-ai/plugin": "*"
   },
   "devDependencies": {
-    "@opencode-ai/plugin": "latest"
+    "@opencode-ai/plugin": "latest",
+    "@types/node": "^26.1.0",
+    "typescript": "^5",
+    "@types/node": "^22"
   }
 }

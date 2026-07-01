@@ -19,6 +19,7 @@ Manages `.worklog/todos.json`.
       "status": "open | done | dropped",
       "priority": "high | medium | low",
       "created": "YYYY-MM-DD",
+      "closed": "YYYY-MM-DD",
       "notes": "optional context or file references"
     }
   ]
@@ -40,7 +41,7 @@ Manages `.worklog/todos.json`.
 
 [medium] 002 — ...
 
---- 1 done, 0 dropped (run /worklog-todo list all to show) ---
+--- 1 done, 0 dropped ---
 ```
 
 ---
@@ -60,7 +61,7 @@ Manages `.worklog/todos.json`.
 
 1. Read `.worklog/todos.json`
 2. Find item with matching id
-3. Set `"status": "done"`, add `"completed": "YYYY-MM-DD"`
+3. Set `"status": "done"`, add `"closed": "YYYY-MM-DD"`
 4. Write file
 5. Confirm: `Marked TODO-NNN done: <title>`
 
@@ -68,7 +69,7 @@ Manages `.worklog/todos.json`.
 
 ## `/worklog-todo drop <id>`
 
-Same as `done` but sets `"status": "dropped"`. Use when a todo is no longer relevant.
+Same as `done` but sets `"status": "dropped"` and `"closed": "YYYY-MM-DD"`. Use when a todo is no longer relevant.
 
 ---
 
