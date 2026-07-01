@@ -35,6 +35,16 @@ export const WorklogPlugin: Plugin = async ({ directory, $ }) => {
   }
 
   return {
+    // Remind the agent when to use each worklog skill — fires on every LLM call
+    "experimental.chat.system.transform": async (_input, output) => {
+      output.system.push(
+        `## Worklog — Cross-Session Continuity\n` +
+        `At session start, run \`/worklog\` to review open todos and blockers.\n` +
+        `During work: record tasks with \`/worklog-todo\`, blockers with \`/worklog-blocker\`, and decisions with \`/worklog-decide\`.\n` +
+        `At session end, run \`/worklog end\` to write a closing summary.`
+      )
+    },
+
     // Inject open todos and blockers into compaction context so they survive resets
     "experimental.session.compacting": async (_input, output) => {
       try {
