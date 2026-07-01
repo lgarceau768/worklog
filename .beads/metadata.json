@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "opencode_worklog",
+  "project_id": "2106fa02-a2cd-47a4-8eb6-c3722a1069d4"
+}
