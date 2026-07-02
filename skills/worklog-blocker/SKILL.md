@@ -25,7 +25,7 @@ When resolved, update `[OPEN]` → `[RESOLVED YYYY-MM-DD]` and add a resolution 
 
 ## `/worklog-blocker` — List Open Blockers
 
-Run: `python3 .worklog/bin/wl blocker list`
+Run: `bun .worklog/bin/wl.ts blocker list`
 
 Prints header + What line for each `[OPEN]` entry. Add `--all` to include resolved blockers.
 

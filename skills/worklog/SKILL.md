@@ -21,8 +21,8 @@ Manages `.worklog/` for cross-session continuity.
 
 Use the `wl` CLI for todos and blockers — never read JSON directly.
 
-1. **Open TODOs** — run `python3 .worklog/bin/wl todo list`
-2. **Open Blockers** — run `python3 .worklog/bin/wl blocker list`
+1. **Open TODOs** — run `bun .worklog/bin/wl.ts todo list`
+2. **Open Blockers** — run `bun .worklog/bin/wl.ts blocker list`
 3. **Today's session** — read `.worklog/sessions/YYYY-MM-DD.md` if it exists (use today's date), show Activity section
 4. **Last decision** — read `.worklog/decisions.md`, show the most recent lightweight ADR
 5. **Recent formal ADRs** — list `docs/adr-*.md` files (filename + first heading line only)

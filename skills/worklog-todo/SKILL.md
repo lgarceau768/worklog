@@ -11,16 +11,16 @@ Manages `.worklog/todos.json` via the `wl` CLI at `.worklog/bin/wl`.
 ## CLI reference
 
 ```bash
-python3 .worklog/bin/wl todo list                         # open todos, priority-sorted
-python3 .worklog/bin/wl todo list --all                   # include done/dropped
-python3 .worklog/bin/wl todo list --priority=high         # filter by priority
-python3 .worklog/bin/wl todo list --json                  # raw JSON output
-python3 .worklog/bin/wl todo add "title" --priority=high  # add (default priority: medium)
-python3 .worklog/bin/wl todo done <id>                    # mark done
-python3 .worklog/bin/wl todo drop <id>                    # mark dropped
-python3 .worklog/bin/wl todo get <id>                     # fetch single item as JSON
-python3 .worklog/bin/wl todo note <id> "text"             # append note to existing todo
-python3 .worklog/bin/wl status                            # compact dashboard (todos + blockers)
+bun .worklog/bin/wl.ts todo list                         # open todos, priority-sorted
+bun .worklog/bin/wl.ts todo list --all                   # include done/dropped
+bun .worklog/bin/wl.ts todo list --priority=high         # filter by priority
+bun .worklog/bin/wl.ts todo list --json                  # raw JSON output
+bun .worklog/bin/wl.ts todo add "title" --priority=high  # add (default priority: medium)
+bun .worklog/bin/wl.ts todo done <id>                    # mark done
+bun .worklog/bin/wl.ts todo drop <id>                    # mark dropped
+bun .worklog/bin/wl.ts todo get <id>                     # fetch single item as JSON
+bun .worklog/bin/wl.ts todo note <id> "text"             # append note to existing todo
+bun .worklog/bin/wl.ts status                            # compact dashboard (todos + blockers)
 ```
 
 ## Schema (for reference only — use the CLI to mutate)
@@ -46,7 +46,7 @@ python3 .worklog/bin/wl status                            # compact dashboard (t
 
 ## `/worklog-todo` or `/worklog-todo list`
 
-Run: `python3 .worklog/bin/wl todo list`
+Run: `bun .worklog/bin/wl.ts todo list`
 
 Output is priority-sorted, one line per open todo:
 ```
@@ -58,7 +58,7 @@ Output is priority-sorted, one line per open todo:
 
 ## `/worklog-todo add <title>`
 
-Run: `python3 .worklog/bin/wl todo add "<title>" --priority=<high|medium|low>`
+Run: `bun .worklog/bin/wl.ts todo add "<title>" --priority=<high|medium|low>`
 
 Default priority: `medium`. Infer priority from context if obvious.
 Confirm output: `Added TODO-NNN: <title>`
@@ -67,7 +67,7 @@ Confirm output: `Added TODO-NNN: <title>`
 
 ## `/worklog-todo done <id>`
 
-Run: `python3 .worklog/bin/wl todo done <id>`
+Run: `bun .worklog/bin/wl.ts todo done <id>`
 
 Confirm output: `Done TODO-NNN: <title>`
 
@@ -75,7 +75,7 @@ Confirm output: `Done TODO-NNN: <title>`
 
 ## `/worklog-todo drop <id>`
 
-Run: `python3 .worklog/bin/wl todo drop <id>`
+Run: `bun .worklog/bin/wl.ts todo drop <id>`
 
 Use when a todo is no longer relevant.
 
@@ -83,6 +83,6 @@ Use when a todo is no longer relevant.
 
 ## `/worklog-todo note <id> <text>`
 
-Run: `python3 .worklog/bin/wl todo note <id> "<text>"`
+Run: `bun .worklog/bin/wl.ts todo note <id> "<text>"`
 
 Appends to the `notes` field of an existing todo.
