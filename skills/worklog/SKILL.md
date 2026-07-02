@@ -19,27 +19,25 @@ Manages `.worklog/` for cross-session continuity.
 
 ## `/worklog` — Status Dashboard
 
-Read these files and present a concise dashboard:
+Use the `wl` CLI for todos and blockers — never read JSON directly.
 
-1. **Open TODOs** — read `.worklog/todos.json`, list items where `"status": "open"`, sorted by priority
-2. **Open Blockers** — read `.worklog/blockers.md`, list any `[OPEN]` entries
+1. **Open TODOs** — run `python3 .worklog/bin/wl todo list`
+2. **Open Blockers** — run `python3 .worklog/bin/wl blocker list`
 3. **Today's session** — read `.worklog/sessions/YYYY-MM-DD.md` if it exists (use today's date), show Activity section
 4. **Last decision** — read `.worklog/decisions.md`, show the most recent lightweight ADR
-5. **Recent formal ADRs** — list `docs/adr-*.md` files (filename + first heading line only); use `ls docs/adr-*.md` and read the `# ADR-NNN` line from each
+5. **Recent formal ADRs** — list `docs/adr-*.md` files (filename + first heading line only)
 
 Format:
 ```
 ## Worklog Status — YYYY-MM-DD
 
 ### Open TODOs (N)
-- [high] 001 — Description
+[high] 001 — Description
 
 ### Open Blockers
 - none
 
 ### Today's session
-- 14:32:01
-- 14:45:22
 [summary if written]
 
 ### Last decision (.worklog/decisions.md)

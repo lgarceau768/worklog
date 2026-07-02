@@ -5,9 +5,25 @@ description: Manage the cross-session todo list in .worklog/todos.json. Use when
 
 # Worklog — Todo Management
 
-Manages `.worklog/todos.json`.
+Manages `.worklog/todos.json` via the `wl` CLI at `.worklog/bin/wl`.
+**Always use the script — never read/write `todos.json` directly.** This keeps JSON out of context.
 
-## Schema
+## CLI reference
+
+```bash
+python3 .worklog/bin/wl todo list                         # open todos, priority-sorted
+python3 .worklog/bin/wl todo list --all                   # include done/dropped
+python3 .worklog/bin/wl todo list --priority=high         # filter by priority
+python3 .worklog/bin/wl todo list --json                  # raw JSON output
+python3 .worklog/bin/wl todo add "title" --priority=high  # add (default priority: medium)
+python3 .worklog/bin/wl todo done <id>                    # mark done
+python3 .worklog/bin/wl todo drop <id>                    # mark dropped
+python3 .worklog/bin/wl todo get <id>                     # fetch single item as JSON
+python3 .worklog/bin/wl todo note <id> "text"             # append note to existing todo
+python3 .worklog/bin/wl status                            # compact dashboard (todos + blockers)
+```
+
+## Schema (for reference only — use the CLI to mutate)
 
 ```json
 {
@@ -30,49 +46,43 @@ Manages `.worklog/todos.json`.
 
 ## `/worklog-todo` or `/worklog-todo list`
 
-1. Read `.worklog/todos.json`
-2. Print open items grouped by priority (high first), then a count of done/dropped items
+Run: `python3 .worklog/bin/wl todo list`
 
+Output is priority-sorted, one line per open todo:
 ```
-### Open TODOs
-
 [high]  001 — Description
-        Created 2026-06-20 | Notes: ...
-
 [medium] 002 — ...
-
---- 1 done, 0 dropped ---
 ```
 
 ---
 
 ## `/worklog-todo add <title>`
 
-1. Read `.worklog/todos.json`
-2. Generate next ID (max existing ID + 1, zero-padded to 3 digits)
-3. Ask priority if not obvious from context (default: medium)
-4. Append new todo with `"status": "open"`, today's date
-5. Write file
-6. Confirm: `Added TODO-NNN: <title>`
+Run: `python3 .worklog/bin/wl todo add "<title>" --priority=<high|medium|low>`
+
+Default priority: `medium`. Infer priority from context if obvious.
+Confirm output: `Added TODO-NNN: <title>`
 
 ---
 
 ## `/worklog-todo done <id>`
 
-1. Read `.worklog/todos.json`
-2. Find item with matching id
-3. Set `"status": "done"`, add `"closed": "YYYY-MM-DD"`
-4. Write file
-5. Confirm: `Marked TODO-NNN done: <title>`
+Run: `python3 .worklog/bin/wl todo done <id>`
+
+Confirm output: `Done TODO-NNN: <title>`
 
 ---
 
 ## `/worklog-todo drop <id>`
 
-Same as `done` but sets `"status": "dropped"` and `"closed": "YYYY-MM-DD"`. Use when a todo is no longer relevant.
+Run: `python3 .worklog/bin/wl todo drop <id>`
+
+Use when a todo is no longer relevant.
 
 ---
 
 ## `/worklog-todo note <id> <text>`
+
+Run: `python3 .worklog/bin/wl todo note <id> "<text>"`
 
 Appends to the `notes` field of an existing todo.

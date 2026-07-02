@@ -25,9 +25,9 @@ When resolved, update `[OPEN]` → `[RESOLVED YYYY-MM-DD]` and add a resolution 
 
 ## `/worklog-blocker` — List Open Blockers
 
-1. Read `.worklog/blockers.md`
-2. Print all entries where status is `[OPEN]`
-3. If none: print `No open blockers.`
+Run: `python3 .worklog/bin/wl blocker list`
+
+Prints header + What line for each `[OPEN]` entry. Add `--all` to include resolved blockers.
 
 ---
 
